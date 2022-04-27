@@ -34,6 +34,17 @@ function medalhasAcumuladas(int $medalhasAcumuladas, array $pais){
     return $medalhasAcumuladas + array_reduce($pais['medalhas'],'somaMedalhas',0);
 }
 
+function pegaMedalhas(array $medalhas){
+    return array_reduce($medalhas,'somaMedalhas',0);
+}
+
+
+function comparaMedalhas(array $medalhasPais1, array $medalhasPais2):callable
+{
+    return function(string $modalidade) use ($medalhasPais1,$medalhasPais2): int {
+        return $medalhasPais2[$modalidade] <=> $medalhasPais1[$modalidade];
+    };
+} 
 
 $dados = array_map('convertePaisParaLetraMaiscula',$dados);
 //$dados = array_filter($dados,'verificaSePaisTemEspacoNoNome');
@@ -50,33 +61,23 @@ $medalhas = array_reduce(array_map(function (array $medalhas){
 0
 );
 
-function pegaMedalhas(array $medalhas){
-    return array_reduce($medalhas,'somaMedalhas',0);
-}
-
 $pais_medalhas = array_column($dados,'medalhas');
 
 $soma_dos_tipo_medalha = array_map('pegaMedalhas',$pais_medalhas);
-
 
 $medalhas = array_reduce($soma_dos_tipo_medalha,'somaMedalhas',0);
 
 usort($dados, function(array $pais1, array $pais2){
     $medalhasPais1 = $pais1['medalhas'];
     $medalhasPais2 = $pais2['medalhas'];
+    $comparador = comparaMedalhas($medalhasPais1,$medalhasPais2);
 
-    $compara_ouro =  $medalhasPais2['ouro'] <=> $medalhasPais1['ouro'];
-    $compara_prata =  $medalhasPais2['prata'] <=> $medalhasPais1['prata'];
-    $compara_bronze =  $medalhasPais2['bronze'] <=> $medalhasPais1['bronze'];
-
-    $resultado = ($compara_ouro !== 0) ? $compara_ouro
-        : ($compara_prata !== 0 ? $compara_prata 
-        : $compara_bronze );
+    $resultado = ($comparador('ouro') !== 0) ? $comparador('ouro')
+        : ($comparador('prata') !== 0 ? $comparador('prata') 
+        : $comparador('bronze') );
 
     return $resultado;
 });
-
-
 
 var_dump($dados);
 

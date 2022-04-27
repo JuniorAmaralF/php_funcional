@@ -40,8 +40,11 @@ $comparaMedalhas = fn (array $medalhasPais1, array $medalhasPais2): callable
     => fn (string $modalidade): int => $medalhasPais2[$modalidade] <=> $medalhasPais1[$modalidade];
  
 
-$dados = array_map('convertePaisParaLetraMaiscula',$dados);
-//$dados = array_filter($dados,$verificaSePaisTemEspacoNome);
+$nomeDePaisesEmMaiusculo = fn ($dados) => array_map('convertePaisParaLetraMaiscula',$dados);
+$filtraPaisesSemEspacoNoNome =  fn ($dados) => array_filter($dados,$verificaSePaisTemEspacoNome);
+
+
+$dados = $filtraPaisesSemEspacoNoNome( $nomeDePaisesEmMaiusculo($dados));
 
 //var_dump($dados);
 

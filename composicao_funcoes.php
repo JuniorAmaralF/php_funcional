@@ -43,8 +43,19 @@ $comparaMedalhas = fn (array $medalhasPais1, array $medalhasPais2): callable
 $nomeDePaisesEmMaiusculo = fn ($dados) => array_map('convertePaisParaLetraMaiscula',$dados);
 $filtraPaisesSemEspacoNoNome =  fn ($dados) => array_filter($dados,$verificaSePaisTemEspacoNome);
 
+function pipe(callable ...$funcoes) : callable
+{
+    return fn($valor) => array_reduce(
+        $funcoes,
+        fn ($valorAcumulado, callable $funcaoAtual) => $funcaoAtual($valorAcumulado),
+        $valor
+    );
+}
 
-$dados = $filtraPaisesSemEspacoNoNome( $nomeDePaisesEmMaiusculo($dados));
+$funcoes = pipe($nomeDePaisesEmMaiusculo,$filtraPaisesSemEspacoNoNome);
+$dados = $funcoes($dados);
+
+
 
 //var_dump($dados);
 

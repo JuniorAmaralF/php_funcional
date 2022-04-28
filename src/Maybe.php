@@ -1,6 +1,6 @@
 <?php
 
-namespace Alura\Funcional;
+namespace Alura\Fp;
 
 class Maybe
 {
@@ -21,7 +21,7 @@ class Maybe
         return $this->valor === null;
     }
 
-    public function getOfElse($default)
+    public function getOrElse($default)
     {
         return $this->isNothing() ? $default : $this->valor;
     }
